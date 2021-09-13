@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+
+from faker import Faker;
+import mysql.connector as mysql
+
+
+
+db = mysql.connect(
+    host = "localhost",
+    user = "root",
+    passwd = "Bilbuk.1994",
+    database = "Toxicity"
+)
+
+#new faker object and string assigment of random name
+faker = Faker()
+newname = faker.name()
+
+cursor = db.cursor()
+
+#create table
+query_table = ("CREATE TABLE users (id int auto_increment primary key, name varchar(25))")
+
+## defining the Query
+query_insert = "INSERT INTO users (name) VALUES (%s)"
+cursor.execute(query_table)
+
+
+for i in range(100):
+    newname = faker.name()
+    ## storing values in a variable
+    values = (newname,)
+    ## executing the queries with values
+    
+    cursor.execute(query_insert, values)
+
+## to make final output we have to run the 'commit()' method of the database object
+db.commit()
+
+print(cursor.rowcount, "record inserted")
